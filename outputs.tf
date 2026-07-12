@@ -1,3 +1,7 @@
+output "api_management_identity_provider_aadb2cs_id" {
+  description = "Map of id values across all api_management_identity_provider_aadb2cs, keyed the same as var.api_management_identity_provider_aadb2cs"
+  value       = { for k, v in azurerm_api_management_identity_provider_aadb2c.api_management_identity_provider_aadb2cs : k => v.id }
+}
 output "api_management_identity_provider_aadb2cs_allowed_tenant" {
   description = "Map of allowed_tenant values across all api_management_identity_provider_aadb2cs, keyed the same as var.api_management_identity_provider_aadb2cs"
   value       = { for k, v in azurerm_api_management_identity_provider_aadb2c.api_management_identity_provider_aadb2cs : k => v.allowed_tenant }
