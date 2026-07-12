@@ -7,6 +7,8 @@ Required:
     - authority
     - client_id
     - client_secret
+    - client_secret_key_vault_id (alternative to client_secret - read from Key Vault instead)
+    - client_secret_key_vault_secret_name (alternative to client_secret - read from Key Vault instead)
     - resource_group_name
     - signin_policy
     - signin_tenant
@@ -18,18 +20,20 @@ Optional:
 EOT
 
   type = map(object({
-    allowed_tenant         = string
-    api_management_name    = string
-    authority              = string
-    client_id              = string
-    client_secret          = string
-    resource_group_name    = string
-    signin_policy          = string
-    signin_tenant          = string
-    signup_policy          = string
-    client_library         = optional(string)
-    password_reset_policy  = optional(string)
-    profile_editing_policy = optional(string)
+    allowed_tenant                      = string
+    api_management_name                 = string
+    authority                           = string
+    client_id                           = string
+    client_secret                       = string
+    client_secret_key_vault_id          = optional(string)
+    client_secret_key_vault_secret_name = optional(string)
+    resource_group_name                 = string
+    signin_policy                       = string
+    signin_tenant                       = string
+    signup_policy                       = string
+    client_library                      = optional(string)
+    password_reset_policy               = optional(string)
+    profile_editing_policy              = optional(string)
   }))
   validation {
     condition = alltrue([
