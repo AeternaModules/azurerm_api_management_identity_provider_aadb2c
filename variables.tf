@@ -7,8 +7,8 @@ Required:
     - authority
     - client_id
     - client_secret
-    - client_secret_key_vault_id (alternative to client_secret - read from Key Vault instead)
-    - client_secret_key_vault_secret_name (alternative to client_secret - read from Key Vault instead)
+    - client_secret_key_vault_id (optional, alternative to client_secret)
+    - client_secret_key_vault_secret_name (optional, alternative to client_secret)
     - resource_group_name
     - signin_policy
     - signin_tenant
@@ -35,86 +35,6 @@ EOT
     password_reset_policy               = optional(string)
     profile_editing_policy              = optional(string)
   }))
-  validation {
-    condition = alltrue([
-      for k, v in var.api_management_identity_provider_aadb2cs : (
-        can(regex("^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$", v.client_id))
-      )
-    ])
-    error_message = "must be a valid UUID"
-  }
-  validation {
-    condition = alltrue([
-      for k, v in var.api_management_identity_provider_aadb2cs : (
-        length(v.client_secret) > 0
-      )
-    ])
-    error_message = "must not be empty"
-  }
-  validation {
-    condition = alltrue([
-      for k, v in var.api_management_identity_provider_aadb2cs : (
-        length(v.allowed_tenant) > 0
-      )
-    ])
-    error_message = "must not be empty"
-  }
-  validation {
-    condition = alltrue([
-      for k, v in var.api_management_identity_provider_aadb2cs : (
-        length(v.signin_tenant) > 0
-      )
-    ])
-    error_message = "must not be empty"
-  }
-  validation {
-    condition = alltrue([
-      for k, v in var.api_management_identity_provider_aadb2cs : (
-        length(v.authority) > 0
-      )
-    ])
-    error_message = "must not be empty"
-  }
-  validation {
-    condition = alltrue([
-      for k, v in var.api_management_identity_provider_aadb2cs : (
-        length(v.signup_policy) > 0
-      )
-    ])
-    error_message = "must not be empty"
-  }
-  validation {
-    condition = alltrue([
-      for k, v in var.api_management_identity_provider_aadb2cs : (
-        length(v.signin_policy) > 0
-      )
-    ])
-    error_message = "must not be empty"
-  }
-  validation {
-    condition = alltrue([
-      for k, v in var.api_management_identity_provider_aadb2cs : (
-        v.client_library == null || (length(v.client_library) >= 0 && length(v.client_library) <= 16)
-      )
-    ])
-    error_message = "must be between 0 and 16 characters"
-  }
-  validation {
-    condition = alltrue([
-      for k, v in var.api_management_identity_provider_aadb2cs : (
-        v.profile_editing_policy == null || (length(v.profile_editing_policy) > 0)
-      )
-    ])
-    error_message = "must not be empty"
-  }
-  validation {
-    condition = alltrue([
-      for k, v in var.api_management_identity_provider_aadb2cs : (
-        v.password_reset_policy == null || (length(v.password_reset_policy) > 0)
-      )
-    ])
-    error_message = "must not be empty"
-  }
   # --- Unconfirmed validation candidates, derived from azurerm_api_management_identity_provider_aadb2c's provider source ---
   # Not auto-enabled: either a bespoke provider validator we can't safely translate,
   # or a path that crosses a list-typed block (needs its own for_each wrapping).
@@ -135,5 +55,35 @@ EOT
   #   source:    [from resourcegroups.ValidateName] !matched
   # path: api_management_name
   #   source:    [from validate.ApiManagementServiceName] !matched
+  # path: client_id
+  #   condition: can(regex("^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$", value))
+  #   message:   must be a valid UUID
+  # path: client_secret
+  #   condition: length(value) > 0
+  #   message:   must not be empty
+  # path: allowed_tenant
+  #   condition: length(value) > 0
+  #   message:   must not be empty
+  # path: signin_tenant
+  #   condition: length(value) > 0
+  #   message:   must not be empty
+  # path: authority
+  #   condition: length(value) > 0
+  #   message:   must not be empty
+  # path: signup_policy
+  #   condition: length(value) > 0
+  #   message:   must not be empty
+  # path: signin_policy
+  #   condition: length(value) > 0
+  #   message:   must not be empty
+  # path: client_library
+  #   condition: length(value) >= 0 && length(value) <= 16
+  #   message:   must be between 0 and 16 characters
+  # path: profile_editing_policy
+  #   condition: length(value) > 0
+  #   message:   must not be empty
+  # path: password_reset_policy
+  #   condition: length(value) > 0
+  #   message:   must not be empty
 }
 
